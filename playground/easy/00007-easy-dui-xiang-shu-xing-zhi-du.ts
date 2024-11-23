@@ -32,8 +32,10 @@
 */
 
 /* _____________ 你的代码 _____________ */
-
-type MyReadonly<T> = any
+// keyof 和in的使用
+type MyReadonly<Todo1> = {
+  readonly[P in keyof Todo1]: Todo1[P];
+}
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

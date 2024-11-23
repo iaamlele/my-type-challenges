@@ -19,8 +19,11 @@
 */
 
 /* _____________ 你的代码 _____________ */
-
-type TupleToObject<T extends readonly any[]> = any
+// 1. 获取元组的值: T[number]
+// 2. 让其能作为对象的键(必须是number | string | symbol)
+type TupleToObject<T extends readonly (string | number | symbol)[]> = {
+  [key in T[number]]: key;
+}
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

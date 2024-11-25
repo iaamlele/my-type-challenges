@@ -21,8 +21,8 @@
 */
 
 /* _____________ 你的代码 _____________ */
-
-type First<T extends any[]> = any
+// 判断空数组,有if-else?
+type First<T extends any[]> = T extends [] ? never: T[0]
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

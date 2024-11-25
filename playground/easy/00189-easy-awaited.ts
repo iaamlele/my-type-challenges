@@ -21,8 +21,30 @@
 */
 
 /* _____________ 你的代码 _____________ */
+// infer
+// 如何处理嵌套? 递归(如果 R 本身又是一个 Promise，可以对它再次调用 MyAwaited)
+// 如何加入条件类型实现错误处理(如果不是Promise类型,是对象类型, ?)
 
-type MyAwaited<T> = any
+// 错解1: 联合类型的分发机制和递归条件的处理差异
+// type MyAwaited<T> = T extends Promise<infer R> 
+//   ? (R extends Promise<infer Q> ? MyAwaited<Q> : R) 
+//   : never; 
+
+// 题解1
+type PromiseThen<T> = {
+  then: (onfulfilled: (arg: T) => any) => any;
+}
+
+type MyAwaited<T extends PromiseThen<any> | Promise<any>> = T extends Promise<infer Inner> 
+  ? Inner extends Promise<any> ? MyAwaited<Inner> : Inner
+  : T extends PromiseThen<infer U> ? U : false;
+
+  // 题解2
+// type MyAwaited<T extends PromiseLike<any>> = T extends PromiseLike<infer U> 
+//   ? U extends PromiseLike<any>
+//     ? MyAwaited<U> 
+//     : U
+//   : never; 
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

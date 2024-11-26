@@ -33,11 +33,35 @@
 */
 
 /* _____________ 你的代码 _____________ */
+// = never 是默认值，表示如果调用时没有传递 K 的值，K 会被推断为 never
 
-type MyReadonly2<T, K> = any
+// 错解1:
+// type MyReadonly2<T, K extends keyof T = never> = {
+//   [P in keyof T] : P extends K 
+//     ? Readonly<T[P]>
+//     : T[P]
+// }
+
+// 错解2: 解决不了Expect<Alike<MyReadonly2<Todo2, 'description' >, Expected>>
+// 如果提供`K`，提供的属性变为只读
+// 如果未提供`K`，则应使所有属性都变为只读
+// 因为第二个参数可能为空，所以需要通过 = 来赋默认值
+// type MyExclude<T, K> = T extends K ? never : T;
+// type MyReadonly2<T, K extends keyof T = keyof T> = {
+//   readonly [k in K] : T[k]
+// } & {
+//   [k in MyExclude<keyof T, K>] : T[k]
+// }
+
+type MyReadonly2<T, K extends keyof T = keyof T> = {
+  readonly [p in K] : T[p]
+} & {
+  [p in keyof T as p extends K ? never : p] : T[p]
+}
 
 /* _____________ 测试用例 _____________ */
 import type { Alike, Expect } from '@type-challenges/utils'
+import path from 'path'
 
 type cases = [
   Expect<Alike<MyReadonly2<Todo1>, Readonly<Todo1>>>,

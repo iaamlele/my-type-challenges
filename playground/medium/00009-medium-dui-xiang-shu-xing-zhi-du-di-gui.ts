@@ -35,8 +35,17 @@
 */
 
 /* _____________ 你的代码 _____________ */
+// 错解1: 忽略数组情况->数组是对象的特殊类型： 在 TypeScript 中，数组被视为一种特殊的对象类型，它继承自 object 类型，但数组的元素是以索引访问的，因此递归地处理对象时需要特别注意数组
+// type DeepReadonly<T> = T extends object 
+//   ? {readonly [K in keyof T]: DeepReadonly<T[K]>}
+//   : T
 
-type DeepReadonly<T> = any
+// 为啥还是不对？～
+type DeepReadonly<T> = T extends (infer U)[]
+  ? ReadonlyArray<DeepReadonly<U>>// 是数组，递归使数组readonly
+  : T extends object // 是object
+    ? {readonly [k in keyof T]: DeepReadonly<T[k]>}
+    : T
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

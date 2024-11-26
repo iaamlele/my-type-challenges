@@ -29,8 +29,14 @@
 */
 
 /* _____________ 你的代码 _____________ */
+// keyof T : T 类型中所有键的集合，形成一个联合类型, "title" | "description" | "completed"
+// P in keyof T: 遍历 T 的键, P 依次取 "title", "description", "completed"
+// as 是用来修改键名的，它允许你在映射过程中根据条件来排除某些键
+// as P extends K ? never : P 的作用是将需要排除的键映射为 never，从而从结果类型中移除这些键
 
-type MyOmit<T, K> = any
+type MyOmit<T, K extends keyof T> = {
+  [P in keyof T as P extends K ? never : P] : T[P];
+}
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

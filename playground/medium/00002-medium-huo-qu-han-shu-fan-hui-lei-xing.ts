@@ -24,8 +24,8 @@
 */
 
 /* _____________ 你的代码 _____________ */
-
-type MyReturnType<T> = any
+// 函数多个参数怎么写？扩展运算符
+type MyReturnType<T> = T extends (...arg: any) => infer res ? res : never;
 
 /* _____________ 测试用例 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

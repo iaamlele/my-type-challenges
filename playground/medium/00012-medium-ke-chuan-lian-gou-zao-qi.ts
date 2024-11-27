@@ -38,10 +38,14 @@
 */
 
 /* _____________ 你的代码 _____________ */
-
-type Chainable = {
-  option(key: string, value: any): any
-  get(): any
+// 1.option保存所有的key: typeof value
+// 2.get获取，筛出所有重复key项
+type Chainable<T = {}> = {
+  // 动态记录键值对: 通过泛型参数 T 来保存当前已经记录的所有键值对类型
+  option<K extends string, V>(key: K extends keyof T 
+    ? never
+    : K, value: V): Chainable<Omit<T, K> & Record<K, V>>;
+  get(): T
 }
 
 /* _____________ 测试用例 _____________ */
